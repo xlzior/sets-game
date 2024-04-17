@@ -1,5 +1,6 @@
 import {
   type Card,
+  containsSet,
   drawCard,
   drawNCardsWithSet,
   isSet,
@@ -57,24 +58,19 @@ export class GameState {
   }
 
   replaceSet() {
-    const toReplace = [];
     this.cards.forEach((card, index) => {
       if (card.selected) {
-        toReplace.push(index);
+        let card = drawCard();
+        while (this.cards.some((c) => c.name === card)) {
+          card = drawCard();
+        }
+        this.cards[index] = { name: card, selected: false };
       }
     });
-    for (const index of toReplace) {
-      let card = drawCard();
-      // draw a new card
-      while (this.cards.some((c) => c.name === card)) {
-        card = drawCard();
-      }
-      this.cards[index] = {
-        name: card,
-        selected: false,
-      };
+    if (!containsSet(this.cards.map((card) => card.name))) {
+      this.replaceSet();
     }
-    // TODO: check if the board contains a set
+    this.resetSelection();
   }
 
   checkSet() {
