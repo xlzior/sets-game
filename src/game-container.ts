@@ -16,6 +16,7 @@ import { shuffle } from "./model";
 class GameContainer extends LitElement {
   static styles: CSSResult = css`
     main {
+      font-family: "Playfair Display", serif;
       --background-colour: #fff;
       --text-colour: #000;
       --accent-colour: #ddd;
@@ -42,6 +43,14 @@ class GameContainer extends LitElement {
 			grid-template-rows: repeat(3, 1fr);
 			gap: 10px;
 		}
+
+    button {
+      cursor: pointer;
+      background-color: var(--accent-colour);
+      font-size: 2em;
+      border: 2px solid var(--background-colour);
+      border-radius: 10px;
+    }
 	`;
 
   @state()
@@ -100,7 +109,9 @@ class GameContainer extends LitElement {
     <main theme=${this._theme}>
       <h1>Sets</h1>
 			<p>${this._count} sets found</p>
-      <button @click=${() => this.toggleDarkMode()}>Toggle dark mode</button>
+      <button @click=${() => this.toggleDarkMode()}>${
+        this._theme === "light" ? "🌙" : "☀️"
+      }</button>
       <div>
         ${this._cards.map(
           (card, i) => html`
