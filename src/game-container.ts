@@ -120,12 +120,14 @@ class GameContainer extends LitElement {
   }
 
   checkSet() {
-    let success = false;
-    [this._cards, success] = checkSet(this._cards);
-    if (success) {
-      this._count++;
-      localStorage.setItem(COUNT, this._count.toString());
-    }
+    setTimeout(() => {
+      let success = false;
+      [this._cards, success] = checkSet(this._cards);
+      if (success) {
+        this._count++;
+        localStorage.setItem(COUNT, this._count.toString());
+      }
+    }, 100);
   }
 
   toggleDarkMode() {
