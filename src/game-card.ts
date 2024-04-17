@@ -7,13 +7,13 @@ class GameCard extends LitElement {
   static styles: CSSResult = css`
 		div {
 			cursor: pointer;
-			border: 4px solid #ddd;
+			border: 4px solid var(--accent-colour);
 			border-radius: 10px;
 		}
-
 		div.selected {
 			border-color: #fd0;
 		}
+
 		img {
 			width: 100%;
 			height: 100%;

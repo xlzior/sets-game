@@ -6,6 +6,7 @@ import {
   checkSet,
   deselectCard,
   initialiseState,
+  resetSelection,
   selectCard,
   toggleCard,
 } from "./game-state";
@@ -15,6 +16,21 @@ import { shuffle } from "./model";
 class GameContainer extends LitElement {
   static styles: CSSResult = css`
     main {
+      --background-colour: #fff;
+      --text-colour: #000;
+      --accent-colour: #ddd;
+    }
+
+    main[theme="dark"] {
+      --background-colour: #222;
+      --text-colour: #fff;
+      --accent-colour: #444;
+    }
+
+    main {
+      height: 100%;
+      background-color: var(--background-colour);
+      color: var(--text-colour);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -27,6 +43,9 @@ class GameContainer extends LitElement {
 			gap: 10px;
 		}
 	`;
+
+  @state()
+  private _theme = localStorage.getItem("theme") || "light";
 
   @state()
   private _cards: SelectableCard[] = initialiseState();
@@ -52,6 +71,7 @@ class GameContainer extends LitElement {
   handleKeyDown(event: KeyboardEvent) {
     if (event.key === " ") {
       this._cards = shuffle(this._cards);
+      this._cards = resetSelection(this._cards);
     } else if (this.shortcuts[event.key] !== undefined) {
       this._cards = selectCard(this._cards, this.shortcuts[event.key]);
       this.checkSet();
@@ -70,11 +90,17 @@ class GameContainer extends LitElement {
     if (success) this._count++;
   }
 
+  toggleDarkMode() {
+    this._theme = this._theme === "light" ? "dark" : "light";
+    localStorage.setItem("theme", this._theme);
+  }
+
   render() {
     return html`
-    <main>
+    <main theme=${this._theme}>
       <h1>Sets</h1>
 			<p>${this._count} sets found</p>
+      <button @click=${() => this.toggleDarkMode()}>Toggle dark mode</button>
       <div>
         ${this._cards.map(
           (card, i) => html`
