@@ -1,12 +1,12 @@
 import { type CSSResult, LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import type { Card } from "./model";
-import type { SelectableCard } from "./view-controller";
+import type { SelectableCard } from "./game-state";
 
 @customElement("game-card")
 class GameCard extends LitElement {
 	static styles: CSSResult = css`
 		div {
+			cursor: pointer;
 			border: 4px solid #ddd;
 			border-radius: 10px;
 		}

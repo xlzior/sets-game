@@ -47,6 +47,10 @@ export function drawNCardsWithSet(n: number): Card[] {
 	return drawnCards;
 }
 
+export function refillCards(cards: Card[]): Card[] {
+	return cards;
+}
+
 export function isSet(cards: Card[]): boolean {
 	const colours = new Set<Colour>();
 	const shapes = new Set<Shape>();

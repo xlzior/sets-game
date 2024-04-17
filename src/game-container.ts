@@ -1,8 +1,8 @@
 import { type CSSResult, LitElement, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import "./game-card";
-import { type Card, drawNCardsWithSet, shuffle } from "./model";
-import type { SelectableCard } from "./view-controller";
+import { GameState } from "./game-state";
+import { drawNCardsWithSet, isSet, shuffle } from "./model";
 
 @customElement("game-container")
 class GameContainer extends LitElement {
@@ -22,57 +22,40 @@ class GameContainer extends LitElement {
 	`;
 
 	@state()
-	cards: SelectableCard[] = [];
+	state: GameState = new GameState();
 
 	constructor() {
 		super();
 		window.addEventListener("keydown", this.handleKeyDown.bind(this));
 		window.addEventListener("keyup", this.handleKeyUp.bind(this));
-		this.cards = drawNCardsWithSet(9).map((card) => ({
-			name: card,
-			selected: false,
-		}));
+	}
+
+	handleClick(index: number) {
+		this.state.toggleCard(index);
+		this.requestUpdate();
 	}
 
 	handleKeyDown(event: KeyboardEvent) {
 		if (event.key === " ") {
-			this.cards = shuffle(this.cards);
+			this.state.shuffle();
+			this.requestUpdate();
 		}
 	}
 
 	handleKeyUp(event: KeyboardEvent) {}
-
-	toggleCard(index: number) {
-		this.cards = this.cards.map((card, i) =>
-			i === index ? { ...card, selected: !card.selected } : card,
-		);
-	}
-
-	selectCard(index: number) {
-		this.cards = this.cards.map((card, i) =>
-			i === index ? { ...card, selected: true } : card,
-		);
-	}
-
-	deselectCard(index: number) {
-		this.cards = this.cards.map((card, i) =>
-			i === index ? { ...card, selected: false } : card,
-		);
-	}
 
 	render() {
 		return html`
     <main>
       <h1>Sets</h1>
       <div>
-        ${this.cards.map(
-					(card, i) =>
-						html`
-              <game-card
-                .card=${card}
-                @click=${() => this.toggleCard(i)}
-              >
-              </game-card>`,
+        ${this.state.cards.map(
+					(card, i) => html`
+						<game-card
+							.card=${card}
+							@click=${() => this.handleClick(i)}
+						>
+						</game-card>`,
 				)}
       </div>
     </main>
