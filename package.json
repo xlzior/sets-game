@@ -4,12 +4,14 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "start": "web-dev-server"
+    "start": "web-dev-server",
+    "format": "biome format --write . && biome check --apply ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@biomejs/biome": "1.7.0",
     "@web/dev-server": "^0.4.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"

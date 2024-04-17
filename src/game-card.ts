@@ -4,7 +4,7 @@ import type { SelectableCard } from "./game-state";
 
 @customElement("game-card")
 class GameCard extends LitElement {
-	static styles: CSSResult = css`
+  static styles: CSSResult = css`
 		div {
 			cursor: pointer;
 			border: 4px solid #ddd;
@@ -20,14 +20,14 @@ class GameCard extends LitElement {
 		}
 	`;
 
-	@property({ type: Object })
-	card: SelectableCard = { name: "red-square-filled", selected: false };
+  @property({ type: Object })
+  card: SelectableCard = { name: "red-square-filled", selected: false };
 
-	render() {
-		return html`
+  render() {
+    return html`
       <div class=${this.card.selected ? "selected" : ""}>
 				<img src="assets/${this.card.name}.svg" alt="${this.card.name}" />
       </div>
     `;
-	}
+  }
 }

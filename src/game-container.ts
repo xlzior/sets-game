@@ -6,7 +6,7 @@ import { drawNCardsWithSet, isSet, shuffle } from "./model";
 
 @customElement("game-container")
 class GameContainer extends LitElement {
-	static styles: CSSResult = css`
+  static styles: CSSResult = css`
     main {
       display: flex;
       flex-direction: column;
@@ -21,44 +21,44 @@ class GameContainer extends LitElement {
 		}
 	`;
 
-	@state()
-	state: GameState = new GameState();
+  @state()
+  state: GameState = new GameState();
 
-	constructor() {
-		super();
-		window.addEventListener("keydown", this.handleKeyDown.bind(this));
-		window.addEventListener("keyup", this.handleKeyUp.bind(this));
-	}
+  constructor() {
+    super();
+    window.addEventListener("keydown", this.handleKeyDown.bind(this));
+    window.addEventListener("keyup", this.handleKeyUp.bind(this));
+  }
 
-	handleClick(index: number) {
-		this.state.toggleCard(index);
-		this.requestUpdate();
-	}
+  handleClick(index: number) {
+    this.state.toggleCard(index);
+    this.requestUpdate();
+  }
 
-	handleKeyDown(event: KeyboardEvent) {
-		if (event.key === " ") {
-			this.state.shuffle();
-			this.requestUpdate();
-		}
-	}
+  handleKeyDown(event: KeyboardEvent) {
+    if (event.key === " ") {
+      this.state.shuffle();
+      this.requestUpdate();
+    }
+  }
 
-	handleKeyUp(event: KeyboardEvent) {}
+  handleKeyUp(event: KeyboardEvent) {}
 
-	render() {
-		return html`
+  render() {
+    return html`
     <main>
       <h1>Sets</h1>
       <div>
         ${this.state.cards.map(
-					(card, i) => html`
+          (card, i) => html`
 						<game-card
 							.card=${card}
 							@click=${() => this.handleClick(i)}
 						>
 						</game-card>`,
-				)}
+        )}
       </div>
     </main>
     `;
-	}
+  }
 }
