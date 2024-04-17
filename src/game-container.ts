@@ -17,7 +17,7 @@ import { shuffle } from "./model";
 class GameContainer extends LitElement {
   static styles: CSSResult = css`
     main {
-      font-family: "Playfair Display", serif;
+      font-family: "Roboto", sans-serif;
       --background-colour: #fff;
       --text-colour: #000;
       --accent-colour: #ddd;
@@ -30,29 +30,54 @@ class GameContainer extends LitElement {
     }
 
     main {
+      box-sizing: border-box;
+      min-height: 100vh;
       height: 100%;
+      padding: 20px;
       background-color: var(--background-colour);
       color: var(--text-colour);
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-		div {
+
+    div.header {
+      width: 100%;
       max-width: 600px;
-			display: grid;
-			grid-template-columns: repeat(3, 1fr);
-			grid-template-rows: repeat(3, 1fr);
-			gap: 10px;
-		}
+      margin: 10px 0 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      align-items: center;
+    }
+
+    div.header > span {
+      text-align: right;
+    }
+
+    h1 {
+      font-family: "Courgette", cursive;
+      text-align: center;
+      margin: 0;
+    }
 
     button {
+      width: 50px;
       cursor: pointer;
       background-color: var(--accent-colour);
       font-size: 2em;
       border: 2px solid var(--background-colour);
       border-radius: 10px;
     }
-	`;
+
+    div.cards {
+      max-width: 600px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 10px;
+    }
+    
+  `;
 
   @state()
   private _theme = localStorage.getItem(THEME) || LIGHT;
@@ -111,12 +136,14 @@ class GameContainer extends LitElement {
   render() {
     return html`
     <main theme=${this._theme}>
-      <h1>Sets</h1>
-			<p>${this._count} sets found</p>
-      <button @click=${() => this.toggleDarkMode()}>${
-        this._theme === LIGHT ? "🌙" : "☀️"
-      }</button>
-      <div>
+      <div class="header">
+        <button @click=${() => this.toggleDarkMode()}>
+          ${this._theme === LIGHT ? "🌙" : "☀️"}
+        </button>
+        <h1>Sets</h1>
+        <span>${this._count} sets found</span>
+      </div>
+      <div class="cards">
         ${this._cards.map(
           (card, i) => html`
 						<game-card
