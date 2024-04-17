@@ -3,6 +3,7 @@ import { customElement, state } from "lit/decorators.js";
 import "./game-card";
 import {
   type SelectableCard,
+  checkSet,
   deselectCard,
   initialiseState,
   selectCard,
@@ -30,6 +31,9 @@ class GameContainer extends LitElement {
   @state()
   private _cards: SelectableCard[] = initialiseState();
 
+  @state()
+  private _count = 0;
+
   constructor() {
     super();
     window.addEventListener("keydown", this.handleKeyDown.bind(this));
@@ -38,6 +42,7 @@ class GameContainer extends LitElement {
 
   handleClick(index: number) {
     this._cards = toggleCard(this._cards, index);
+    this.checkSet();
   }
 
   shortcuts = Object.fromEntries(
@@ -49,6 +54,7 @@ class GameContainer extends LitElement {
       this._cards = shuffle(this._cards);
     } else if (this.shortcuts[event.key] !== undefined) {
       this._cards = selectCard(this._cards, this.shortcuts[event.key]);
+      this.checkSet();
     }
   }
 
@@ -58,10 +64,17 @@ class GameContainer extends LitElement {
     }
   }
 
+  checkSet() {
+    let success = false;
+    [this._cards, success] = checkSet(this._cards);
+    if (success) this._count++;
+  }
+
   render() {
     return html`
     <main>
       <h1>Sets</h1>
+			<p>${this._count} sets found</p>
       <div>
         ${this._cards.map(
           (card, i) => html`

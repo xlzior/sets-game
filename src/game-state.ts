@@ -23,19 +23,18 @@ export function toggleCard(
   state: SelectableCard[],
   index: number,
 ): SelectableCard[] {
-  const nextState = produce(state, (draft) => {
+  return produce(state, (draft) => {
     draft[index].selected = !draft[index].selected;
   });
-  return checkSet(nextState);
 }
+
 export function selectCard(
   state: SelectableCard[],
   index: number,
 ): SelectableCard[] {
-  const nextState = produce(state, (draft) => {
+  return produce(state, (draft) => {
     draft[index].selected = true;
   });
-  return checkSet(nextState);
 }
 
 export function deselectCard(
@@ -69,11 +68,11 @@ export function replaceSet(state: SelectableCard[]): SelectableCard[] {
   return replaceSet(nextState);
 }
 
-export function checkSet(state: SelectableCard[]): SelectableCard[] {
+export function checkSet(state: SelectableCard[]): [SelectableCard[], boolean] {
   const selectedCards = state.filter((card) => card.selected);
-  if (selectedCards.length !== 3) return state;
+  if (selectedCards.length !== 3) return [state, false];
 
   return isSet(selectedCards.map((card) => card.name))
-    ? replaceSet(state)
-    : resetSelection(state);
+    ? [replaceSet(state), true]
+    : [resetSelection(state), false];
 }
