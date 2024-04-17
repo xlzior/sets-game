@@ -4,7 +4,6 @@ import {
   drawCard,
   drawNCardsWithSet,
   isSet,
-  shuffle,
 } from "./model";
 
 export type SelectableCard = {

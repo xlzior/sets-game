@@ -1,6 +1,5 @@
 import { type CSSResult, LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import type { SelectableCard } from "./game-state";
 import type { Card } from "./model";
 
 @customElement("game-card")

@@ -40,17 +40,9 @@ class GameContainer extends LitElement {
     this.cards = toggleCard(this.cards, index);
   }
 
-  shortcuts = {
-    y: 0,
-    u: 1,
-    i: 2,
-    h: 3,
-    j: 4,
-    k: 5,
-    b: 6,
-    n: 7,
-    m: 8,
-  };
+  shortcuts = Object.fromEntries(
+    ["y", "u", "i", "h", "j", "k", "b", "n", "m"].map((key, i) => [key, i]),
+  );
 
   handleKeyDown(event: KeyboardEvent) {
     if (event.key === " ") {
