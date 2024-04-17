@@ -146,12 +146,12 @@ class GameContainer extends LitElement {
       <div class="cards">
         ${this._cards.map(
           (card, i) => html`
-						<game-card
-							.card=${card.name}
-							?selected=${card.selected}
-							@click=${() => this.handleClick(i)}
-						>
-						</game-card>`,
+            <game-card
+              .card=${card.name}
+              ?selected=${card.selected}
+              @click=${() => this.handleClick(i)}
+            >
+            </game-card>`,
         )}
       </div>
     </main>
