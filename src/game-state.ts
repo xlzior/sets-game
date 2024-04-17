@@ -35,12 +35,18 @@ export class GameState {
   }
 
   selectCard(index: number) {
-    this.cards[index].selected = true;
+    this.cards[index] = {
+      ...this.cards[index],
+      selected: true,
+    };
     this.checkSet();
   }
 
   deselectCard(index: number) {
-    this.cards[index].selected = false;
+    this.cards[index] = {
+      ...this.cards[index],
+      selected: false,
+    };
   }
 
   resetSelection() {
@@ -75,10 +81,12 @@ export class GameState {
     const selectedCards = this.cards.filter((card) => card.selected);
     if (selectedCards.length !== 3) return;
 
-    if (isSet(selectedCards.map((card) => card.name))) {
-      this.replaceSet();
-    } else {
-      this.resetSelection();
-    }
+    setTimeout(() => {
+      if (isSet(selectedCards.map((card) => card.name))) {
+        this.replaceSet();
+      } else {
+        this.resetSelection();
+      }
+    }, 100);
   }
 }

@@ -2,7 +2,6 @@ import { type CSSResult, LitElement, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import "./game-card";
 import { GameState } from "./game-state";
-import { drawNCardsWithSet, isSet, shuffle } from "./model";
 
 @customElement("game-container")
 class GameContainer extends LitElement {
@@ -35,14 +34,34 @@ class GameContainer extends LitElement {
     this.requestUpdate();
   }
 
+  shortcuts = {
+    y: 0,
+    u: 1,
+    i: 2,
+    h: 3,
+    j: 4,
+    k: 5,
+    b: 6,
+    n: 7,
+    m: 8,
+  };
+
   handleKeyDown(event: KeyboardEvent) {
     if (event.key === " ") {
       this.state.shuffle();
       this.requestUpdate();
+    } else if (this.shortcuts[event.key] !== undefined) {
+      this.state.selectCard(this.shortcuts[event.key]);
+      this.requestUpdate();
     }
   }
 
-  handleKeyUp(event: KeyboardEvent) {}
+  handleKeyUp(event: KeyboardEvent) {
+    if (this.shortcuts[event.key] !== undefined) {
+      this.state.deselectCard(this.shortcuts[event.key]);
+      this.requestUpdate();
+    }
+  }
 
   render() {
     return html`
