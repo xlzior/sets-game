@@ -1,7 +1,14 @@
 import { type CSSResult, LitElement, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import "./game-card";
-import { GameState } from "./game-state";
+import {
+  type SelectableCard,
+  deselectCard,
+  initialiseState,
+  selectCard,
+  toggleCard,
+} from "./game-state";
+import { shuffle } from "./model";
 
 @customElement("game-container")
 class GameContainer extends LitElement {
@@ -21,7 +28,7 @@ class GameContainer extends LitElement {
 	`;
 
   @state()
-  state: GameState = new GameState();
+  cards: SelectableCard[] = initialiseState();
 
   constructor() {
     super();
@@ -30,10 +37,7 @@ class GameContainer extends LitElement {
   }
 
   handleClick(index: number) {
-    this.state.toggleCard(index);
-    setTimeout(() => {
-      this.requestUpdate();
-    }, 100);
+    this.cards = toggleCard(this.cards, index);
   }
 
   shortcuts = {
@@ -50,18 +54,15 @@ class GameContainer extends LitElement {
 
   handleKeyDown(event: KeyboardEvent) {
     if (event.key === " ") {
-      this.state.shuffle();
-      this.requestUpdate();
+      this.cards = shuffle(this.cards);
     } else if (this.shortcuts[event.key] !== undefined) {
-      this.state.selectCard(this.shortcuts[event.key]);
-      this.requestUpdate();
+      this.cards = selectCard(this.cards, this.shortcuts[event.key]);
     }
   }
 
   handleKeyUp(event: KeyboardEvent) {
     if (this.shortcuts[event.key] !== undefined) {
-      this.state.deselectCard(this.shortcuts[event.key]);
-      this.requestUpdate();
+      this.cards = deselectCard(this.cards, this.shortcuts[event.key]);
     }
   }
 
@@ -70,7 +71,7 @@ class GameContainer extends LitElement {
     <main>
       <h1>Sets</h1>
       <div>
-        ${this.state.cards.map(
+        ${this.cards.map(
           (card, i) => html`
 						<game-card
 							.card=${card.name}

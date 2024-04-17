@@ -12,77 +12,67 @@ export type SelectableCard = {
   selected: boolean;
 };
 
-export class GameState {
-  cards: SelectableCard[] = [];
+export function initialiseState(): SelectableCard[] {
+  return drawNCardsWithSet(9).map((card) => ({
+    name: card,
+    selected: false,
+  }));
+}
 
-  constructor() {
-    this.cards = drawNCardsWithSet(9).map((card) => ({
-      name: card,
-      selected: false,
-    }));
-  }
+export function toggleCard(
+  state: SelectableCard[],
+  index: number,
+): SelectableCard[] {
+  const nextState = state.map((card, i) =>
+    i === index ? { ...card, selected: !card.selected } : card,
+  );
+  return checkSet(nextState);
+}
 
-  shuffle() {
-    this.cards = shuffle(this.cards);
-  }
+export function selectCard(
+  state: SelectableCard[],
+  index: number,
+): SelectableCard[] {
+  const nextState = state.map((card, i) =>
+    i === index ? { ...card, selected: true } : card,
+  );
+  return checkSet(nextState);
+}
 
-  toggleCard(index: number) {
-    // TODO: use Immer?
-    this.cards[index] = {
-      ...this.cards[index],
-      selected: !this.cards[index].selected,
-    };
-    this.checkSet();
-  }
+export function deselectCard(
+  state: SelectableCard[],
+  index: number,
+): SelectableCard[] {
+  return state.map((card, i) =>
+    i === index ? { ...card, selected: false } : card,
+  );
+}
 
-  selectCard(index: number) {
-    this.cards[index] = {
-      ...this.cards[index],
-      selected: true,
-    };
-    this.checkSet();
-  }
+export function resetSelection(state: SelectableCard[]): SelectableCard[] {
+  return state.map((card) => ({ ...card, selected: false }));
+}
 
-  deselectCard(index: number) {
-    this.cards[index] = {
-      ...this.cards[index],
-      selected: false,
-    };
-  }
-
-  resetSelection() {
-    this.cards = this.cards.map((card) => ({
-      ...card,
-      selected: false,
-    }));
-  }
-
-  replaceSet() {
-    this.cards.forEach((card, index) => {
-      if (card.selected) {
-        let card = drawCard();
-        while (this.cards.some((c) => c.name === card)) {
-          card = drawCard();
-        }
-        this.cards[index] = { name: card, selected: false };
+export function replaceSet(state: SelectableCard[]): SelectableCard[] {
+  state.forEach((card, index) => {
+    if (card.selected) {
+      let newCard = drawCard();
+      while (state.some((c) => c.name === newCard)) {
+        newCard = drawCard();
       }
-    });
-    if (!containsSet(this.cards.map((card) => card.name))) {
-      this.replaceSet();
+      state[index] = { name: newCard, selected: false };
     }
-    this.resetSelection();
+  });
+  if (!containsSet(state.map((card) => card.name))) {
+    return replaceSet(state);
   }
+  return resetSelection(state);
+}
 
-  checkSet() {
-    const selectedCards = this.cards.filter((card) => card.selected);
-    if (selectedCards.length !== 3) return;
+export function checkSet(state: SelectableCard[]): SelectableCard[] {
+  const selectedCards = state.filter((card) => card.selected);
+  if (selectedCards.length !== 3) return state;
 
-    setTimeout(() => {
-      if (isSet(selectedCards.map((card) => card.name))) {
-        this.replaceSet();
-      } else {
-        this.resetSelection();
-      }
-    }, 100);
-  }
+  return isSet(selectedCards.map((card) => card.name))
+    ? replaceSet(state)
+    : resetSelection(state);
 }
