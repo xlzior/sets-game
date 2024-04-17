@@ -10,6 +10,7 @@ import {
   selectCard,
   toggleCard,
 } from "./game-state";
+import { COUNT, DARK, LIGHT, THEME } from "./local-storage";
 import { shuffle } from "./model";
 
 @customElement("game-container")
@@ -54,13 +55,13 @@ class GameContainer extends LitElement {
 	`;
 
   @state()
-  private _theme = localStorage.getItem("theme") || "light";
+  private _theme = localStorage.getItem(THEME) || LIGHT;
 
   @state()
   private _cards: SelectableCard[] = initialiseState();
 
   @state()
-  private _count = 0;
+  private _count = Number.parseInt(localStorage.getItem(COUNT)) || 0;
 
   constructor() {
     super();
@@ -96,12 +97,15 @@ class GameContainer extends LitElement {
   checkSet() {
     let success = false;
     [this._cards, success] = checkSet(this._cards);
-    if (success) this._count++;
+    if (success) {
+      this._count++;
+      localStorage.setItem(COUNT, this._count.toString());
+    }
   }
 
   toggleDarkMode() {
-    this._theme = this._theme === "light" ? "dark" : "light";
-    localStorage.setItem("theme", this._theme);
+    this._theme = this._theme === LIGHT ? DARK : LIGHT;
+    localStorage.setItem(THEME, this._theme);
   }
 
   render() {
@@ -110,7 +114,7 @@ class GameContainer extends LitElement {
       <h1>Sets</h1>
 			<p>${this._count} sets found</p>
       <button @click=${() => this.toggleDarkMode()}>${
-        this._theme === "light" ? "🌙" : "☀️"
+        this._theme === LIGHT ? "🌙" : "☀️"
       }</button>
       <div>
         ${this._cards.map(
