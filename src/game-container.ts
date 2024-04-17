@@ -73,7 +73,8 @@ class GameContainer extends LitElement {
         ${this.state.cards.map(
           (card, i) => html`
 						<game-card
-							.card=${card}
+							.card=${card.name}
+							?selected=${card.selected}
 							@click=${() => this.handleClick(i)}
 						>
 						</game-card>`,

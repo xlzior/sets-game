@@ -1,6 +1,7 @@
 import { type CSSResult, LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import type { SelectableCard } from "./game-state";
+import type { Card } from "./model";
 
 @customElement("game-card")
 class GameCard extends LitElement {
@@ -20,13 +21,16 @@ class GameCard extends LitElement {
 		}
 	`;
 
-  @property({ type: Object })
-  card: SelectableCard = { name: "red-square-filled", selected: false };
+  @property()
+  card: Card = "red-square-filled";
+
+  @property({ type: Boolean })
+  selected = false;
 
   render() {
     return html`
-      <div class=${this.card.selected ? "selected" : ""}>
-				<img src="assets/${this.card.name}.svg" alt="${this.card.name}" />
+      <div class=${this.selected ? "selected" : ""}>
+				<img src="assets/${this.card}.svg" alt="${this.card}" />
       </div>
     `;
   }
