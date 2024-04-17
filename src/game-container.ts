@@ -28,7 +28,7 @@ class GameContainer extends LitElement {
 	`;
 
   @state()
-  cards: SelectableCard[] = initialiseState();
+  private _cards: SelectableCard[] = initialiseState();
 
   constructor() {
     super();
@@ -37,7 +37,7 @@ class GameContainer extends LitElement {
   }
 
   handleClick(index: number) {
-    this.cards = toggleCard(this.cards, index);
+    this._cards = toggleCard(this._cards, index);
   }
 
   shortcuts = Object.fromEntries(
@@ -46,15 +46,15 @@ class GameContainer extends LitElement {
 
   handleKeyDown(event: KeyboardEvent) {
     if (event.key === " ") {
-      this.cards = shuffle(this.cards);
+      this._cards = shuffle(this._cards);
     } else if (this.shortcuts[event.key] !== undefined) {
-      this.cards = selectCard(this.cards, this.shortcuts[event.key]);
+      this._cards = selectCard(this._cards, this.shortcuts[event.key]);
     }
   }
 
   handleKeyUp(event: KeyboardEvent) {
     if (this.shortcuts[event.key] !== undefined) {
-      this.cards = deselectCard(this.cards, this.shortcuts[event.key]);
+      this._cards = deselectCard(this._cards, this.shortcuts[event.key]);
     }
   }
 
@@ -63,7 +63,7 @@ class GameContainer extends LitElement {
     <main>
       <h1>Sets</h1>
       <div>
-        ${this.cards.map(
+        ${this._cards.map(
           (card, i) => html`
 						<game-card
 							.card=${card.name}
