@@ -31,7 +31,9 @@ class GameContainer extends LitElement {
 
   handleClick(index: number) {
     this.state.toggleCard(index);
-    this.requestUpdate();
+    setTimeout(() => {
+      this.requestUpdate();
+    }, 100);
   }
 
   shortcuts = {
