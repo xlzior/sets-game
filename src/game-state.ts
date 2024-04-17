@@ -1,3 +1,4 @@
+import { produce } from "immer";
 import {
   type Card,
   containsSet,
@@ -22,19 +23,18 @@ export function toggleCard(
   state: SelectableCard[],
   index: number,
 ): SelectableCard[] {
-  const nextState = state.map((card, i) =>
-    i === index ? { ...card, selected: !card.selected } : card,
-  );
+  const nextState = produce(state, (draft) => {
+    draft[index].selected = !draft[index].selected;
+  });
   return checkSet(nextState);
 }
-
 export function selectCard(
   state: SelectableCard[],
   index: number,
 ): SelectableCard[] {
-  const nextState = state.map((card, i) =>
-    i === index ? { ...card, selected: true } : card,
-  );
+  const nextState = produce(state, (draft) => {
+    draft[index].selected = true;
+  });
   return checkSet(nextState);
 }
 
@@ -42,9 +42,9 @@ export function deselectCard(
   state: SelectableCard[],
   index: number,
 ): SelectableCard[] {
-  return state.map((card, i) =>
-    i === index ? { ...card, selected: false } : card,
-  );
+  return produce(state, (draft) => {
+    draft[index].selected = false;
+  });
 }
 
 export function resetSelection(state: SelectableCard[]): SelectableCard[] {
@@ -52,19 +52,21 @@ export function resetSelection(state: SelectableCard[]): SelectableCard[] {
 }
 
 export function replaceSet(state: SelectableCard[]): SelectableCard[] {
-  state.forEach((card, index) => {
-    if (card.selected) {
-      let newCard = drawCard();
-      while (state.some((c) => c.name === newCard)) {
-        newCard = drawCard();
+  const nextState = produce(state, (draft) => {
+    draft.forEach((card, index) => {
+      if (card.selected) {
+        let newCard = drawCard();
+        while (draft.some((c) => c.name === newCard)) {
+          newCard = drawCard();
+        }
+        draft[index] = { name: newCard, selected: false };
       }
-      state[index] = { name: newCard, selected: false };
-    }
+    });
   });
-  if (!containsSet(state.map((card) => card.name))) {
-    return replaceSet(state);
+  if (containsSet(nextState.map((card) => card.name))) {
+    return resetSelection(nextState);
   }
-  return resetSelection(state);
+  return replaceSet(nextState);
 }
 
 export function checkSet(state: SelectableCard[]): SelectableCard[] {
